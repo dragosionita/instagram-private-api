@@ -12,19 +12,19 @@ export class UsertagsFeed extends Feed<UsertagsFeedResponseRootObject, UsertagsF
     this.nextMaxId = body.next_max_id;
   }
 
-  async request() {
+  async request(startId: string) {
     const { body } = await this.client.request.send<UsertagsFeedResponseRootObject>({
       url: `/api/v1/usertags/${this.id}/feed/`,
       qs: {
-        max_id: this.nextMaxId,
+        max_id: startId ? startId : this.nextMaxId,
       },
     });
     this.state = body;
     return body;
   }
 
-  async items() {
-    const body = await this.request();
+  async items(startId: string = null) {
+    const body = await this.request(startId);
     return body.items;
   }
 }
